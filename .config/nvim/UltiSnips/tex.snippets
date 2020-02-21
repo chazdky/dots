@@ -1,0 +1,538 @@
+
+snippet al "Align" b
+\begin{align}
+	${0:${VISUAL}}
+\end{align}
+endsnippet
+
+snippet enum "Enumerate" b
+\begin{enumerate}
+	\item $0
+\end{enumerate}
+endsnippet
+
+snippet cntr "center environment" Ab
+\begin{center}
+${1:${VISUAL}}
+\end{center}
+endsnippet
+
+snippet litz "Itemize" Ab
+\begin{itemize}
+	${1:${VISUAL}}
+\end{itemize}
+endsnippet
+
+snippet bbf "Inline Boldface inside brackets" Ai
+\bf{${1:${VISUAL}}}
+endsnippet
+
+
+snippet ibf "Inline Boldface" Ai
+{\bf{${1:${VISUAL}}}}
+endsnippet
+
+snippet desc "Description" b
+\begin{description}
+	\item[$1] $0
+\end{description}
+endsnippet
+
+snippet itm "Individual item" A
+\item{${1:${VISUAL}}} ${0}
+endsnippet
+
+snippet sitm "Individual subitem" A
+  \subitem{${1:${VISUAL}}} ${0}
+endsnippet
+
+snippet part "Part" b
+\part{${1:part name}}%
+\label{prt:${2:${1/(\w+)|\W+/(?1:\L$0\E:_)/ga}}}
+
+${0}
+endsnippet
+
+snippet cha "Chapter" b
+\chapter{${1:chapter name}}%
+\label{cha:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
+
+${0}
+endsnippet
+
+
+snippet ni "Non-indented paragraph" b
+\noindent
+${0}
+endsnippet
+
+snippet pac "Package" b
+\usepackage`!p snip.rv='[' if t[1] else ""`${1:options}`!p snip.rv = ']' if t[1] else ""`{${2:package}}$0
+endsnippet
+
+snippet lp "Long parenthesis"
+\left(${1:${VISUAL:contents}}\right)$0
+endsnippet
+
+snippet "mint(ed)?( (\S+))?" "Minted code typeset" br
+\begin{listing}
+\begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{${1:`!p
+snip.rv = match.group(3) if match.group(2) is not None else "language"`}}
+${2:${VISUAL:code}}
+\end{minted}
+\caption{${3:caption name}}
+\label{lst:${4:${3/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
+\end{listing}
+
+$0
+endsnippet
+
+snippet figure
+\begin{figure}
+	\centering
+	\includegraphics[]{}
+	\caption{${0}}
+	\label{fig:${1}}
+\end{figure}
+endsnippet
+
+
+#########################
+#  Global Tables design #
+#########################
+
+global !p
+
+def create_table(snip):
+	rows = snip.buffer[snip.line].split('x')[0]
+	cols = snip.buffer[snip.line].split('x')[1]
+
+	int_val = lambda string: int(''.join(s for s in string if s.isdigit()))
+	
+	rows = int_val(rows)
+	cols = int_val(cols)
+
+	offset = cols + 1
+	old_spacing = snip.buffer[snip.line][:snip.buffer[snip.line].rfind('\t') + 1]
+	
+	snip.buffer[snip.line] = ''
+	
+	final_str = old_spacing + "\\begin{tabular}{|" + "|".join(['$' + str(i + 1) for i in range(cols)]) + "|}\n"
+
+	for i in range(rows):
+		final_str += old_spacing + '\t'
+		final_str += " & ".join(['$' + str(i * cols + j + offset) for j in range(cols)])
+
+		final_str += " \\\\\\\n"
+
+	final_str += old_spacing + "\\end{tabular}\n$0"
+
+	snip.expand_anon(final_str)
+
+def add_row(snip):
+	row_len = int(''.join(s for s in snip.buffer[snip.line] if s.isdigit()))
+	old_spacing = snip.buffer[snip.line][:snip.buffer[snip.line].rfind('\t') + 1]
+
+	snip.buffer[snip.line] = ''
+	
+	final_str = old_spacing
+	final_str += " & ".join(['$' + str(j + 1) for j in range(row_len)])
+	final_str += " \\\\\\"
+
+	snip.expand_anon(final_str)
+
+endglobal
+
+snippet "b(egin)?" "begin{} / end{}" br
+\begin{${1:something}}
+	${0:${VISUAL}}
+\end{$1}
+endsnippet
+
+snippet abs "abstract environment" b
+\begin{abstract}
+	$0
+\end{abstract}
+endsnippet
+
+snippet tab "tabular / array environment" b
+\begin{${1:t}${1/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${2:c}}
+$0${2/(?<=.)(c|l|r)|./(?1: & )/g}
+\end{$1${1/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}
+endsnippet
+
+pre_expand "create_table(snip)"
+snippet "gentbl(\d+)x(\d+)" "Generate table of *width* by *height*" r  
+endsnippet
+
+pre_expand "add_row(snip)"
+snippet "tr(\d+)" "Add table row of dimension ..." r
+endsnippet
+
+snippet table "Table environment" b
+\begin{table}[${1:htpb}]
+	\centering
+	\caption{${2:caption}}
+	\label{tab:${3:label}}
+	\begin{${4:t}${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${5:c}}
+	$0${5/(?<=.)(c|l|r)|./(?1: & )/g}
+	\end{$4${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}
+\end{table}
+endsnippet
+
+snippet fig "Figure environment" b
+\begin{figure}[${2:htpb}]
+	\centering
+	\includegraphics[width=${3:0.8}\linewidth]{${4:name.ext}}
+	\caption{${4/(\w+)\.\w+/\u$1/}$0}%
+	\label{fig:${4/(\w+)\.\w+/$1/}}
+\end{figure}
+endsnippet
+
+
+# Document templates
+
+snippet templ-minimal "Template: Minimal" b
+\documentclass{minimal}
+\begin{document}
+
+Hello World!${0}
+
+\end{document}
+endsnippet
+
+###################
+#       LAB       #
+#     STUFFS      #
+###################
+
+snippet scrot "Template: insert scrot" Ab
+\begin{center}
+	\includegraphics[width=0.${1}\linewidth]{${4}}
+	\caption{${2}}
+	\label{${3}}
+\end{center}
+${0}
+endsnippet
+
+snippet ccode "Template: Include Code" Ab
+\begin{mdframed}
+\begin{verbatim}
+${1}
+\end{verbatim}
+\end{mdframed}
+endsnippet
+
+snippet ff21 "Template: Float Fig 2 over 1" Ab
+
+\begin{figure}[!hbt]\centering
+\subfloat[${1}]{\label{${5}${6}}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${2}]{\label{${5}${7}}\includegraphics[width=.45\linewidth]{demo}}\par 
+\subfloat[${3}]{\label{${5}${8}}\includegraphics[width=.45\linewidth]{demo}}
+\caption{${4}}
+\label{${5}}
+\end{figure}
+
+${0}
+endsnippet
+
+snippet ff12 "Template: Float Fig 1 over 2" Ab
+
+\begin{figure}[!hbt]\centering
+\subfloat[${1}]{\label{${5}${6}}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${2}]{\label{${5}${7}}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${3}]{\label{${5}${8}}\includegraphics[width=.45\linewidth]{demo}}\par
+\caption{${4}}
+\label{${5}}
+\end{figure}
+
+${0}
+
+endsnippet
+
+
+snippet f212 "Template: Float Fig 2 over 1 over 2" Ab
+
+\begin{figure}[!hbt]\centering
+\subfloat[${1}]{\label{${7}${8}}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${2}]{\label{${7}${9}}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${3}]{\label{${7}${10}}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${4}]{\label{${7}${11}}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${5}]{\label{${7}${12}}\includegraphics[width=.45\linewidth]{demo}}\par
+\caption{${6}}
+\label{${7}}
+\end{figure}
+
+${0}
+endsnippet
+
+snippet cli "Template: make list" Ab
+\hspace{0.2cm}
+\begin{tcolorbox}[width=6.3in]
+\scriptsize 
+- Important Commands for the Lab
+  \begin{itemize}
+	\item{${1}} ${2}
+	  \subitem{${3}} ${4}
+	  \subitem{}
+	\item{}
+  \end{itemize}
+\end{tcolorbox}
+\hspace{0.2cm}
+\normalsize  
+
+\newpage
+endsnippet
+
+snippet subadd "Adding a subfile to the main Journal" Ab
+\subfile{${1}}
+
+%=========================
+
+\newpage
+
+${2}
+endsnippet
+
+snippet rsec "research paper question" Ab
+%=========================
+\section{${1:${VISUAL}}} 
+${0}
+
+endsnippet
+
+snippet rsub "research paper answer" Ab
+\subsection{answer}
+${1}
+endsnippet
+
+snippet risub "research paper answer - no indent" Ab
+\noindent\subsection{answer}
+${1}
+endsnippet
+
+snippet cout "Template: boxed outline" Ab
+
+\hspace{0.2cm}
+\begin{tcolorbox}[width=6.3in]
+\scriptsize 
+${1}
+  \begin{outline}
+    \1 ${2}
+  \end{outline}
+\end{tcolorbox}
+\hspace{0.2cm}
+\normalsize  
+	
+endsnippet
+
+snippet iverb "inline verbatim" A
+{\scriptsize{\verb$${1:${VISUAL}}$}\normalsize} ${0}
+endsnippet
+
+snippet fref "long intro with subref and page ref" Ai
+You can see in Fig.~\ref{${1}}~\subref{${2}} 
+on Pg.~\pageref{${3}} ${0}
+endsnippet
+
+snippet lref "inline reference" Ai
+Fig.~\ref{${1}}${0}
+endsnippet
+
+snippet sref "inline subref" Ai
+Fig.~\ref{${1}}\subref{${2}}${0}
+endsnippet
+
+snippet pageref "inline pageref" Ai
+Pg.~\pageref{${1}}${0}
+endsnippet
+
+snippet brk "Line break" Ai
+\hfill\break
+
+endsnippet
+
+snippet cgrey "Template gray box around code or list" b
+
+\hspace{0.2cm}
+\begin{tcolorbox}[width=6.3in]
+\scriptsize 
+${1}
+  \begin{${2}}
+  ${3}
+  \end{${2}}
+\end{tcolorbox}
+\hspace{0.2cm}
+\normalsize  
+
+endsnippet
+snippet cpg "clear page" Ab
+\clearpage
+endsnippet
+
+snippet hbk "linebreak h space" Ab
+\hfill\break
+endsnippet
+
+snippet csec "lab section" Ab
+
+%===================================
+\mysection{\textbf{Part ${1}: ${2}}}
+${3}
+
+endsnippet
+
+snippet csub "lab subsection" Ab
+\mysubsection{${1}}{${2:${VISUAL}}}
+\\\\${0}
+endsnippet
+
+snippet cisub "lab subsection" Ab
+\noindent\mysubsection{${1}}{${2:${VISUAL}}}
+\\\\${0}
+endsnippet
+
+snippet subsub "Subsubsection" Ab
+\subsubection{${1}}
+\\\\${0}
+endsnippet
+
+snippet creport "Template: LabReport" b
+\documentclass{report}
+
+\usepackage{textcomp}
+\usepackage[demo]{graphicx}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{outlines}
+%===================================
+\newcommand{\classinfo}{{\bf ${1} \\\\ ${2}}\\\\{\it CIT ${3}}\\\\{Chaz Davis}}
+\newcommand{\semester}{BCTC \\\\ Spring 2020}
+%===================================
+\newcommand{\mysection}[1]{\section*{#1}}
+\newcommand{\mysubsection}[2]{\textbf{\romannumeral #1) #2}}
+%===================================
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{ \fancyplain{}{Chaz Davis} }
+\rhead{ \fancyplain{}{\today} }
+\cfoot{ \fancyplain{}{\thepage} }
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%===================================
+\title{\classinfo}
+\author{\semester}
+\date{\today}
+
+%===================================
+
+\begin{document}
+
+\maketitle
+
+%===================================
+\mysection{\textbf{Part 1: ${4}}}
+${0}
+
+
+
+
+
+%===================================
+
+\end{document}
+endsnippet
+
+
+snippet rpap "Research paper" b
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{boxedminipage}
+\usepackage{multicol}
+\usepackage{mdframed}
+\usepackage{fancyvrb}
+\usepackage{outlines}
+%======================
+\newcommand\tab[1][0.05cm]{\hspace*{#1}}
+\newcommand{\command}[1]{\textcolor{blue}{#1}}
+%======================
+\pagestyle{fancy}
+\lhead{\today}
+\chead{\bf{Research Week ${1}}}
+\rhead{Chaz Davis}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+%======================
+\begin{document}
+
+\title{Research Week ${1}}
+\author{Chaz Davis}
+\date{\today}
+
+\maketitle
+
+
+\section{Question} ${2}
+
+\subsection{answer}
+${0}
+
+
+
+%======================
+\end{document}
+endsnippet
+
+snippet cpap "Template: CIT paper" Ab
+\documentclass[10pt]{article}
+
+\usepackage{titleps}
+\usepackage{graphicx}
+\usepackage{outlines}
+
+\setlength{\parindent}{4em}
+
+\begin{document}
+
+\title{${1}}
+\author{Chaz Davis}
+\date{\today}
+
+\maketitle
+
+%===========================================
+\section{${2}}
+${0}
+
+
+%===========================================
+\end{document}
+endsnippet
+
+
+snippet radd "Template: Add to Research journal" b
+\documentclass[]{subfiles}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter[${1}]{${2}\linebreak[1] ${3} \hspace*{\fill}{\date}}
+\noindent\textbf{{${4} Lab ${5}} \hspace*{\fill}{\textbf{CIT ${6}}}}\linebreak[1]
+{{Spring 2020} \hspace*{\fill}{Chaz Davis}}                             
+%===================================
+%===================================
+
+endsnippet

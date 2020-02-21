@@ -79,10 +79,11 @@ alias gra='git remote add origin'
 alias gpm='git push -u origin master'
 
 # Tmux aliases
-alias tas='tmux attach session'
-alias tds='tmux detach session'
-alias tls='tmux list session'
-alias tks='tmux kill session'
+alias tas='tmux attach-session'
+alias tds='tmux detach-session'
+alias tls='tmux list-sessions'
+alias tks='tmux kill-session'
+alias connect='ssh root@50.116.34.43'
 
 # Termdown aliases
 alias td5m='termdown -b 5m'

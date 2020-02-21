@@ -1,7 +1,10 @@
-" .vimrc / init.vim
-" The following vim/neovim configuration works for both Vim and NeoVim
+" .vimrc / init.vim Will work for both vim and neovim
+" this init was made by Chaz Davis (chazdky@github) 
+" a testing ground for viml and to get the configuration that i am seeking
+" in an init and create the playground for coding that i am seeking from my
+" vim/nvim productivity and coding career
 
-" ensure vim-plug is installed and then load it
+" ensure that vim-plug is installed and then load it {{{
 call functions#PlugLoad()
 call plug#begin('~/.config/nvim/plugged')
 
@@ -52,7 +55,6 @@ call plug#begin('~/.config/nvim/plugged')
     set t_vb=
     set tm=500
 " }}}
-
 " Appearance {{{
     set number " show line numbers
     set wrap " turn on line wrapping
@@ -97,7 +99,7 @@ call plug#begin('~/.config/nvim/plugged')
     set listchars=tab:→\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
     set showbreak=↪
 
-    set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
+    set t_Co=258 " Explicitly tell vim that the terminal supports 256 colors
     " switch cursor to line when in insert mode, and block when not
     set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
     \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
@@ -145,10 +147,10 @@ call plug#begin('~/.config/nvim/plugged')
             \   },
             \   'component_type': {
             \       'readonly': 'error',
-            \       'linter_warnings': 'warning',
-            \       'linter_errors': 'error'
-            \   },
-            \   'component_function': {
+            \       'linter_warnings': 'warning', 
+            \       'linter_errors': 'error' 
+            \   }, 
+            \   'component_function': { 
             \       'fileencoding': 'helpers#lightline#fileEncoding',
             \       'filename': 'helpers#lightline#fileName',
             \       'fileformat': 'helpers#lightline#fileFormat',
@@ -174,7 +176,7 @@ call plug#begin('~/.config/nvim/plugged')
     " better linux integration {{{
         Plug 'tpope/vim-eunuch'
         " :Delete :Unlink :Move :Rename :Chmod :Mkdir :Cfind :Clocate
-        " :Lfind :Llocate :Wall :SudoWrite :SudoEdit 
+        " :Lfind :Llocate :Wall :SudoWrite :SudoEdit
     " }}}
 " }}}
 
@@ -216,9 +218,6 @@ call plug#begin('~/.config/nvim/plugged')
 
     " markdown to html
     nmap <leader>md :%!markdown --html4tags <cr>
-
-    " " clear empty spaces at the end of lines on save
-    " autocmd BufWritePre * :%s/\s\+$//g
 
     " remove extra whitespace
     nmap <leader><space> :%s/\s\+$<cr>
@@ -360,20 +359,14 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'wakatime/vim-wakatime'
     noremap <leader>wt :WakaTimeToday<cr>
 
-    " Pomodoro timer with lightline integration
-    Plug 'tricktux/vim-pomodoro'
-    noremap <leader>ss :PomodoroStart<cr>
-    noremap <leader>sp :PomodoroStop<cr>
-
-    " Tagbar
-    Plug 'majutsushi/tagbar'
-    nmap <leader>Z :TagbarToggle<cr>
-
     " easy commenting motions
     Plug 'tpope/vim-commentary'
 
     " mappings which are simply short normal mode aliases for commonly used ex commands
     Plug 'tpope/vim-unimpaired'
+
+    " easy alignment of columns and tex
+    Plug 'junegunn/vim-easy-align'
 
     " endings for html, xml, etc. - ehances surround
     Plug 'tpope/vim-ragtag'
@@ -383,6 +376,9 @@ call plug#begin('~/.config/nvim/plugged')
 
     " tmux integration for vim
     Plug 'benmills/vimux'
+
+    " quickrun
+    Plug 'thinca/vim-quickrun'
 
     " enables repeating other supported plugins with the . command
     Plug 'tpope/vim-repeat'
@@ -400,112 +396,110 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'tpope/vim-sleuth'
 
     " Startify: Fancy startup screen for vim {{{
-        Plug 'mhinz/vim-startify'
+	Plug 'mhinz/vim-startify'
 
-        " Don't change to directory when selecting a file
-        let g:startify_files_number = 5
-        let g:startify_change_to_dir = 0
-        let g:startify_custom_header = [ ]
-        let g:startify_relative_path = 1
-        let g:startify_use_env = 1
+	" Don't change to directory when selecting a file
+	let g:startify_files_number = 5
+	let g:startify_change_to_dir = 0
+	let g:startify_custom_header = [ ]
+	let g:startify_relative_path = 1
+	let g:startify_use_env = 1
 
-        " Custom startup list, only show MRU from current directory/project
-        let g:startify_lists = [
-        \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
-        \  { 'type': function('helpers#startify#listcommits'), 'header': [ 'Recent Commits' ] },
-        \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
-        \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
-        \  { 'type': 'commands',  'header': [ 'Commands' ]       },
-        \ ]
+	" Custom startup list, only show MRU from current directory/project
+	let g:startify_lists = [
+	\  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
+	\  { 'type': function('helpers#startify#listcommits'), 'header': [ 'Recent Commits' ] },
+	\  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
+	\  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
+	\  { 'type': 'commands',  'header': [ 'Commands' ]       },
+	\ ]
 
-        let g:startify_commands = [
-        \   { 'up': [ 'Update Plugins', ':PlugUpdate' ] },
-        \   { 'ug': [ 'Upgrade Plugin Manager', ':PlugUpgrade' ] },
-        \ ]
+	let g:startify_commands = [
+	\   { 'up': [ 'Update Plugins', ':PlugUpdate' ] },
+	\   { 'ug': [ 'Upgrade Plugin Manager', ':PlugUpgrade' ] },
+	\ ]
 
-        let g:startify_bookmarks = [
-            \ { 'c': '~/.config/nvim/init.vim' },
-            \ { 'g': '~/.gitconfig' },
-            \ { 'z': '~/.zshrc' }
-        \ ]
+	let g:startify_bookmarks = [
+	    \ { 'c': '~/.config/nvim/init.vim' },
+	    \ { 'g': '~/.gitconfig' },
+	    \ { 'z': '~/.zshrc' },
+	    \ { 'a': '~/.config/awesome/rc.lua' },
+	    \ { 't': '~/.config/kitty/kitty.conf' },
+    	\ ]
 
-        autocmd User Startified setlocal cursorline
-        nmap <leader>st :Startify<cr>
+	autocmd User Startified setlocal cursorline
+	nmap <leader>st :Startify<cr>
     " }}}
 
     " Close buffers but keep splits
     Plug 'moll/vim-bbye'
-    nmap <leader>bd :Bdelete<cr>
+    nmap <leader>b :Bdelete<cr>
 
     " Writing in vim {{{{
-        Plug 'junegunn/goyo.vim'
-        Plug 'junegunn/limelight.vim'
+	Plug 'junegunn/goyo.vim'
+	Plug 'junegunn/limelight.vim'
 
-        let g:limelight_conceal_ctermfg = 62
-        let g:limelight_conceal_guifg = '#5f5fd7'
-        let g:limelight_default_coeffecient = 0.7
-        let g:limelight_paragraph_span = 1
-        let g:limelight_priority = -1
+	let g:limelight_conceal_ctermfg = 56
+	let g:limelight_conceal_guifg = '#5f00d7'
+	let g:limelight_default_coeffecient = 0.7
+	let g:limelight_paragraph_span = 1
+	let g:limelight_priority = -1
 
-        nmap <leader>gy :Goyo<CR>
-        nmap <leader>ll :Limelight!!<CR>
+	nmap <leader>gy :Goyo<CR>
+	nmap <leader>ll :Limelight!!<CR>
 
-
-    " }}}
-
-    " context-aware pasting
-    Plug 'sickill/vim-pasta'
+   " }}}
+   " Context-aware pasting
+   Plug 'sickill/vim-pasta'
 
     " NERDTree {{{
-        Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
-        Plug 'Xuyuanp/nerdtree-git-plugin'
-        Plug 'ryanoasis/vim-devicons'
-        Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-        let g:WebDevIconsOS = 'Linux'
-        let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-        let g:DevIconsEnableFoldersOpenClose = 1
-        let g:DevIconsEnableFolderExtensionPatternMatching = 1
-        let NERDTreeDirArrowExpandable = "\u00a0" " make arrows invisible
-        let NERDTreeDirArrowCollapsible = "\u00a0" " make arrows invisible
-        let NERDTreeNodeDelimiter = "\u263a" " smiley face
+      Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] } 
+      Plug 'Xuyuanp/nerdtree-git-plugin'
+      Plug 'ryanoasis/vim-devicons'
+      Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+      let g:WebDevIconsUseSystemCallToDetetOS = 1
+      let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+      let g:DevIconsEnableFolderOpenClose = 1
+      let g:DevIconsEnableFolderExtensionPatternmatching = 1
+      let NERDTreeDirArrowExpandable = "\u00a0" " make arrows invisible
+      let NERDTreeDirArrowCollapsible = "\u00a0" " make arrows invisible
+      let NERDTreeNodeDelimiter = "\u263a" " smiley face
 
-        augroup nerdtree
-            autocmd!
-            autocmd FileType nerdtree setlocal nolist " turn off whitespace characters
-            autocmd FileType nerdtree setlocal nocursorline " turn off line highlighting for performance
-        augroup END
+      augroup nerdtree
+          autocmd!
+          autocmd FileType nerdtree setlocal nolist " turn off whitespace characters
+          autocmd FileType nerdtree setlocal nocursorline " turn off line highlighting for performance
+      augroup END
 
-        " Toggle NERDTree
-        function! ToggleNerdTree()
-            if @% != "" && @% !~ "Startify" && (!exists("g:NERDTree") || (g:NERDTree.ExistsForTab() && !g:NERDTree.IsOpen()))
-                :NERDTreeFind
-            else
-                :NERDTreeToggle
-            endif
-        endfunction
-        " toggle nerd tree
-        nmap <silent> <leader>n :call ToggleNerdTree()<cr>
-        " find the current file in nerdtree without needing to reload the drawer
-        nmap <silent> <leader>y :NERDTreeFind<cr>
+      " Toggle NERDTree
+      function! ToggleNerdTree()
+          if @% != "" && @% !~ "Startify" && (!exists("g:NERDTree") || (g:NERDTree.ExistsForTab() && !g:NERDTree.IsOpen()))
+              :NERDTreeFind
+          else
+              :NERDTreeToggle
+          endif
+      endfunction
+      " toggle nerd tree
+      nmap <silent> <leader>n :call ToggleNerdTree()<cr>
+      " find the current file in nerdtree without needing to reload the drawer
+      nmap <silent> <leader>y :NERDTreeFind<cr>
 
-        let NERDTreeShowHidden=1
-        " let NERDTreeDirArrowExpandable = '▷'
-        " let NERDTreeDirArrowCollapsible = '▼'
-        let g:NERDTreeIndicatorMapCustom = {
-        \ "Modified"  : "✹",
-        \ "Staged"    : "✚",
-        \ "Untracked" : "✭",
-        \ "Renamed"   : "➜",
-        \ "Unmerged"  : "═",
-        \ "Deleted"   : "✖",
-        \ "Dirty"     : "✗",
-        \ "Clean"     : "✔︎",
-        \ 'Ignored'   : '☒',
-        \ "Unknown"   : "?"
-        \ }
-
+	  let NERDTreeShowHidden=1
+		let g:NERDTreeIndicatorMapCustom = {
+		\ "Modified"  : "✹",
+		\ "Staged"    : "✚",
+		\ "Untracked" : "✭",
+		\ "Renamed"   : "➜",
+		\ "Unmerged"  : "═",
+		\ "Deleted"   : "✖",
+		\ "Dirty"     : "✗",
+		\ "Clean"     : "✔︎",
+		\ 'Ignored'   : '☒',
+		\ "Unknown"   : "?"
+		\ }
+   
+   
     " }}}
-
     " FZF {{{
         Plug '/usr/local/opt/fzf'
         Plug 'junegunn/fzf.vim'
@@ -513,19 +507,20 @@ call plug#begin('~/.config/nvim/plugged')
 
         if isdirectory(".git")
             " if in a git project, use :GFiles
-            nmap <silent> <leader>Gf :GitFiles --cached --others --exclude-standard<cr>
+            nmap <silent> <leader>t :GitFiles --cached --others --exclude-standard<cr>
         else
             " otherwise, use :FZF
-            nmap <silent> <leader>Gf :FZF<cr>
+            nmap <silent> <leader>t :FZF<cr>
         endif
 
         nmap <silent> <leader>s :GFiles?<cr>
 
-        nmap <silent> <leader>rb :Buffers<cr>
+        nmap <silent> <leader>r :Buffers<cr>
         nmap <silent> <leader>e :FZF<cr>
         nmap <leader><tab> <plug>(fzf-maps-n)
         xmap <leader><tab> <plug>(fzf-maps-x)
         omap <leader><tab> <plug>(fzf-maps-o)
+
         " Insert mode completion
         imap <c-x><c-k> <plug>(fzf-complete-word)
         imap <c-x><c-f> <plug>(fzf-complete-path)
@@ -558,16 +553,16 @@ call plug#begin('~/.config/nvim/plugged')
 
     " vim-fugitive {{{
         Plug 'tpope/vim-fugitive'
-        nmap <silent> <leader>Gs :Gstatus<cr>
-        nmap <leader>Ge :Gedit<cr>
-        nmap <silent><leader>Gr :Gread<cr>
-        nmap <silent><leader>Gb :Gblame<cr>
+        nmap <silent> <leader>gs :Gstatus<cr>
+        nmap <leader>ge :Gedit<cr>
+        nmap <silent><leader>gr :Gread<cr>
+        nmap <silent><leader>gb :Gblame<cr>
 
         Plug 'tpope/vim-rhubarb' " hub extension for fugitive
         Plug 'sodapopcan/vim-twiggy'
     " }}}
-    " vim-snippets
-    Plug 'honza/vim-snippets'
+    " Vim tmux
+    Plug 'tmux-plugins/vim-tmux'
 
     " UltiSnips {{{
         Plug 'SirVer/ultisnips' " Snippets plugin
@@ -576,6 +571,7 @@ call plug#begin('~/.config/nvim/plugged')
         let g:UltiSnipsJumpBackwardTrigger="<C-k>"
         let g:UltiSnipsEditSplit="vertical"
         nmap <leader>ue :UltiSnipsEdit<cr>
+
     " }}}
 
     " coc {{{
@@ -589,27 +585,26 @@ call plug#begin('~/.config/nvim/plugged')
         \ 'coc-eslint',
         \ 'coc-tslint-plugin',
         \ 'coc-pairs',
-        \ 'coc-rls',
-        \ 'coc-lists',
-        \ 'coc-java',
-        \ 'coc-smartf',
-        \ 'coc-yank',
-        \ 'coc-vimtex',
         \ 'coc-sh',
         \ 'coc-vimlsp',
         \ 'coc-emmet',
         \ 'coc-prettier',
         \ 'coc-ultisnips',
-        \ 'coc-snippets',
         \ 'coc-explorer',
-        \ 'coc-python'
+        \ 'coc-python',
+        \ 'coc-lists',
+        \ 'coc-rls',
+        \ 'coc-vimtex',
+        \ 'coc-java',
+        \ 'coc-smartf',
+        \ 'coc-yank'
         \ ]
 
         autocmd CursorHold * silent call CocActionAsync('highlight')
 
         " coc-prettier
         command! -nargs=0 Prettier :CocCommand prettier.formatFile
-        nmap <leader>fp :CocCommand prettier.formatFile<cr>
+        nmap <leader>f :CocCommand prettier.formatFile<cr>
 
         " coc-git
         nmap [g <Plug>(coc-git-prevchunk)
@@ -621,7 +616,7 @@ call plug#begin('~/.config/nvim/plugged')
 
         "remap keys for gotos
         nmap <silent> gd <Plug>(coc-definition)
-        nmap <silent> gt <Plug>(coc-type-definition)
+        nmap <silent> gy <Plug>(coc-type-definition)
         nmap <silent> gi <Plug>(coc-implementation)
         nmap <silent> gr <Plug>(coc-references)
         nmap <silent> gh <Plug>(coc-doHover)
@@ -634,8 +629,8 @@ call plug#begin('~/.config/nvim/plugged')
         nmap <silent> <leader>rn <Plug>(coc-rename)
 
         " Remap for format selected region
-        xmap <leader>fp  <Plug>(coc-format-selected)
-        nmap <leader>fp  <Plug>(coc-format-selected)
+        xmap <leader>f  <Plug>(coc-format-selected)
+        nmap <leader>f  <Plug>(coc-format-selected)
 
         " organize imports
         command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
@@ -651,46 +646,6 @@ call plug#begin('~/.config/nvim/plugged')
             endif
         endfunction
 
-        " grep word under cursor
-        command! -nargs=+ -complete=custom,s:GrepArgs Rg exe 'CocList grep '.<q-args>'
-
-        function! s:GrepArgs(...)
-            let list = ['-S', '-smartcase', '-i', '-ignorecase', '-w', '-word',
-                        \ '-e', '-regex', '-u', '-skip-vcs-ignores', '-t', '-extension']
-            return join(list, "\n")
-        endfunction
-
-        nnoremap <silent> <leader>cf :exe 'CocList -I --input='.expand('<cword>').' grep'<CR>
-        vnoremap <leader>gr :<C-u>call <SID>GrepFromSelected(visualmode())<CR>
-        nnoremap <leader>gr :<C-u>set operatorfunc=<SID>GrepFromSelected<CR>g@
-
-        function! s:GrepFromSelected(type)
-          let saved_unnamed_register = @@
-          if a:type ==# 'v'
-            normal! `<v`>y
-          elseif a:type ==# 'char'
-            normal! `[v`]y
-          else
-            return
-          endif
-          let word = substitute(@@, '\n$', '', 'g')
-          let word = escape(word, '| ')
-          let @@ = saved_unnamed_register
-          execute 'CocList grep '.word
-        endfunction
-
-        " coc-smarf
-        " press <esc> to cancel.
-        nmap f <Plug>(coc-smartf-forward)
-        nmap F <Plug>(coc-smartf-backward)
-        nmap ; <Plug>(coc-smartf-repeat)
-        nmap ,/ <Plug>(coc-smartf-repeat-opposite)
-
-        augroup Smartf
-          autocmd User SmartfEnter :hi Conceal ctermfg=220 guifg=#6638F0
-          autocmd User SmartfLeave :hi Conceal ctermfg=239 guifg=#504945
-        augroup end
-
         "tab completion
         inoremap <silent><expr> <TAB>
             \ pumvisible() ? "\<C-n>" :
@@ -702,13 +657,44 @@ call plug#begin('~/.config/nvim/plugged')
         let col = col('.') - 1
         return !col || getline('.')[col - 1]  =~# '\s'
         endfunction
+
+        " Using CocList
+        " Show all diagnostics
+        nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+        " Manage extensions
+        nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+        " Show commands
+        nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+        " Find symbol of current document
+        nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+        " Search workspace symbols
+        nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+        " Do default action for next item.
+        nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+        " Do default action for previous item.
+        nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+        " Resume latest coc list
+        nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+        " coc-smartf setup
+        " press <esc> to cancel.
+        nmap f <Plug>(coc-smartf-forward)
+        nmap F <Plug>(coc-smartf-backward)
+        nmap ; <Plug>(coc-smartf-repeat)
+        nmap , <Plug>(coc-smartf-repeat-opposite)
+
+        augroup Smartf
+          autocmd User SmartfEnter :hi Conceal ctermfg=220 guifg=#6638F0
+          autocmd User SmartfLeave :hi Conceal ctermfg=239 guifg=#504945
+        augroup end
+
+        " coc-yank setup
+        " -A means auto preview, and --normal means open list on normal mode.
+        nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
+
     " }}}
 " }}}
 
-" init.lua {{{
-    set runtimepath+=~/.config/nvim/lua/tools.lua
-
-"}}}
 " Language-Specific Configuration {{{
     " html / templates {{{
         " emmet support for vim - easily create markdup wth CSS-like syntax
@@ -764,7 +750,7 @@ call plug#begin('~/.config/nvim/plugged')
         let g:vim_markdown_toc_autofit = 1
         nmap <leader>Tc :Toc<cr>
         nmap <leader>Tv :Tocv<cr>
-        
+
         "Tpope with that markdown ish
         Plug 'tpope/vim-markdown', { 'for': 'markdown' }
         let g:markdown_fenced_languages = [ 'tsx=typescript.tsx', 'bash=sh', 'viml=vim','python=py', 'csharp=cs', 'c++=cpp', 'flutter=dart', 'rust=rs' ]
@@ -780,7 +766,7 @@ call plug#begin('~/.config/nvim/plugged')
     " }}}
     " Latex {{{
 
-        " well try to give vimtex a shot 
+        " well try to give vimtex a shot
         Plug 'lervag/vimtex'
         let g:tex_flavor = 'latex'
         let g:vimtex_view_method = 'zathura'
@@ -793,12 +779,16 @@ call plug#begin('~/.config/nvim/plugged')
         " built in Leader ll :VimtexCompileToggle
         " \ll to open in zathura :VimtexCompileToggle
         "useful vimtex commands
-        ":VimtexTocOpen|:VimtexTocToggle 
+        ":VimtexTocOpen|:VimtexTocToggle
         ":VimtexInfo
         ":VimtexCountWords|:VimtexCountLetters
         ":VimtexLabelsOpen|:VimtexLabelsToggle
         ":VimtexCompileOutput
         ":VimtexErrors
+        nmap <leader>vc :VimtexClean<cr>
+        nmap <leader>vt :VimtexTocToggle<cr>
+
+        " Tex conceal - make it easier to read as your write live
         Plug 'KeitaNakamura/tex-conceal.vim'
         set conceallevel=1
         let g:tex_conceal='abdmg'
@@ -811,8 +801,15 @@ call plug#begin('~/.config/nvim/plugged')
 
 
     " }}}
-    " Flutter {{{
     
+    " init.lua {{{
+
+       command! Scratch lua require'tools'.makeScratch()
+
+    "}}}
+
+    " Flutter {{{
+
     " The dart language plugin
     Plug 'dart-lang/dart-vim-plugin'
 
@@ -828,7 +825,7 @@ call plug#begin('~/.config/nvim/plugged')
     nnoremap <leader>fr :FlutterHotReload<cr>
     nnoremap <leader>fR :FlutterHotRestart<cr>
     nnoremap <leader>fD :FlutterVisualDebug<cr>
-    
+
     " }}}
 
     " JSON {{{
@@ -842,6 +839,12 @@ call plug#begin('~/.config/nvim/plugged')
     " }}}
 
     Plug 'ekalinin/Dockerfile.vim'
+" }}}
+" Lua shit {{{
+   " load lua functions for navigation
+   " lua require("navigation")
+   " let g:fzf_layout = { 'window': 'lua NavigationFloatingWin()' }
+
 " }}}
 
 call plug#end()

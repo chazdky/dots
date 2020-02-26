@@ -65,7 +65,7 @@ call plug#begin('~/.config/nvim/plugged')
     set ttyfast " faster redrawing
     set diffopt+=vertical,iwhite,internal,algorithm:patience,hiddenoff
     set laststatus=2 " show the status line all the time
-    set so=10 " set 10 lines to the cursors - when moving vertical
+    set so=999 " set 10 lines to the cursors - when moving vertical
     set wildmenu " enhanced command line completion
     set hidden " current buffer can be put into background
     set showcmd " show incomplete commands
@@ -99,7 +99,7 @@ call plug#begin('~/.config/nvim/plugged')
     set listchars=tab:→\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
     set showbreak=↪
 
-    set t_Co=258 " Explicitly tell vim that the terminal supports 256 colors
+    set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
     " switch cursor to line when in insert mode, and block when not
     set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
     \,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
@@ -566,7 +566,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     " UltiSnips {{{
         Plug 'SirVer/ultisnips' " Snippets plugin
-        let g:UltiSnipsExpandTrigger="<C-l>"
+        let g:UltiSnipsExpandTrigger="<leader>m"
         let g:UltiSnipsJumpForwardTrigger="<C-j>"
         let g:UltiSnipsJumpBackwardTrigger="<C-k>"
         let g:UltiSnipsEditSplit="vertical"

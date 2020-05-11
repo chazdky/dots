@@ -12,11 +12,15 @@ call plug#begin('~/.config/nvim/plugged')
     " Abbreviations
     abbr funciton function
     abbr teh the
+    abbr adn and
     abbr tempalte template
     abbr fitler filter
     abbr cosnt const
     abbr attribtue attribute
     abbr attribuet attribute
+    abbr netwrok network
+    abbr netowrk network
+    abbr passowrd password
 
     set autoread " detect when a file is changed
 
@@ -128,7 +132,7 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'dracula/vim', { 'as': 'dracula' }
     Plug 'joshdick/onedark.vim'
     Plug 'Rigellute/shades-of-purple.vim'
-    Plug 'drewtempelmeyer/palenight.vim'
+    Plug 'kyazdani42/nvim-palenight.lua'
 
     " LightLine {{{
         Plug 'itchyny/lightline.vim'
@@ -157,9 +161,9 @@ call plug#begin('~/.config/nvim/plugged')
             \       'filetype': 'helpers#lightline#fileType',
             \       'gitbranch': 'helpers#lightline#gitBranch',
             \       'cocstatus': 'coc#status',
+            \       'ObsessionStatus': 'vim-obsession#ObsessionStatus()',
             \       'currentfunction': 'helpers#lightline#currentFunction',
             \       'gitblame': 'helpers#lightline#gitBlame',
-            \       'pomostatus': 'helpers#lightline#pomoStatus'
             \   },
             \   'tabline': {
             \       'left': [ [ 'tabs' ] ],
@@ -177,7 +181,18 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'tpope/vim-eunuch'
         " :Delete :Unlink :Move :Rename :Chmod :Mkdir :Cfind :Clocate
         " :Lfind :Llocate :Wall :SudoWrite :SudoEdit
+    " Saving and restoring sessions
+    Plug 'tpope/vim-obsession'
+
+    " vo = track a session or pause it; vs = stop and delete session file
+    nmap <leader>vo :Obsession<cr>
+    nmap <leader>vs :Obsession!<cr>
+
     " }}}
+    " Terminal and which-key
+    Plug 'voldikss/vim-floaterm'
+    Plug 'liuchengxu/vim-which-key'
+    Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
 " }}}
 
 " General Mappings {{{
@@ -193,7 +208,11 @@ call plug#begin('~/.config/nvim/plugged')
     nmap <leader>W :w !sudo tee "%"
 
     " set paste toggle
-    set pastetoggle=<leader>v
+    set pastetoggle=<leader>p
+
+    " Get word count
+    noremap <leader>wc g<C-g>
+    vmap <leader>wc g<C-g>
 
     " Let shift enter and ctrl enter function like an IDE esc and inserting abv/bel
     imap <C-cr> <esc>O
@@ -216,8 +235,31 @@ call plug#begin('~/.config/nvim/plugged')
     " activate spell-checking alternatives
     nmap ;s :set invspell spelllang=en<cr>
 
-    " markdown to html
-    nmap <leader>md :%!markdown --html4tags <cr>
+    " Easy Align
+    " Interactive mode in Visual mode
+    vmap <Enter> <Plug>(EasyAlign)
+
+    " Start Easy Align for a motion/text object
+    nmap ga <Plug>(EasyAlign)
+
+    " quickrun to run file and open in quickfix window
+    nmap <leader>qr :QuickRun<cr>
+
+    " vimux commands
+    nmap <leader>vv :VimuxRunLastCommand<CR>
+    nmap <leader>vp :VimuxPromptCommand<CR>
+    nmap <leader>vi :VimuxInspectRunner<CR>
+    nmap <leader>vz :VimuxZoomRunner<CR>
+
+    fun! VimuxSlime()
+       call VimuxSendText(@v)
+       call VimuxSendKeys("Enter")
+    endfun
+
+    vmap <leader>ts "vy :call VimuxSlime()<CR>
+    nmap <leader>ts vip<leader>ts<CR>
+ 
+
 
     " remove extra whitespace
     nmap <leader><space> :%s/\s\+$<cr>
@@ -236,8 +278,8 @@ call plug#begin('~/.config/nvim/plugged')
 
     " movement {{{
         " cleaner window split behavior
-        map <leader>ws :split<cr>
-        map <leader>wv :vsplit<cr>
+        map <space>sp :split<cr>
+        map <space>vs :vsplit<cr>
 
         " Better Window Movement
         map <silent> <C-h> <Plug>WinMoveLeft
@@ -357,7 +399,7 @@ call plug#begin('~/.config/nvim/plugged')
 
     " Track my coding time and languages
     Plug 'wakatime/vim-wakatime'
-    noremap <leader>wt :WakaTimeToday<cr>
+    noremap <space>wt :WakaTimeToday<cr>
 
     " easy commenting motions
     Plug 'tpope/vim-commentary'
@@ -500,6 +542,13 @@ call plug#begin('~/.config/nvim/plugged')
    
    
     " }}}
+    " ranger for nvim {{{
+    " rnvimr
+    Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
+    " Make ranger replace netrw and be the file explorer
+    let g:rnvimr_ex_enable = 1
+    nmap <space>r :RnvimrToggle<CR>
+    " }}}
     " FZF {{{
         Plug '/usr/local/opt/fzf'
         Plug 'junegunn/fzf.vim'
@@ -507,16 +556,16 @@ call plug#begin('~/.config/nvim/plugged')
 
         if isdirectory(".git")
             " if in a git project, use :GFiles
-            nmap <silent> <leader>t :GitFiles --cached --others --exclude-standard<cr>
+            nmap <silent> <leader>tf :GitFiles --cached --others --exclude-standard<cr>
         else
             " otherwise, use :FZF
-            nmap <silent> <leader>t :FZF<cr>
+            nmap <silent> <leader>tf :FZF<cr>
         endif
 
-        nmap <silent> <leader>s :GFiles?<cr>
+        nmap <silent> <leader>sg :GFiles?<cr>
 
-        nmap <silent> <leader>r :Buffers<cr>
-        nmap <silent> <leader>e :FZF<cr>
+        nmap <silent> <leader>B :Buffers<cr>
+        nmap <silent> <leader>F :FZF<cr>
         nmap <leader><tab> <plug>(fzf-maps-n)
         xmap <leader><tab> <plug>(fzf-maps-x)
         omap <leader><tab> <plug>(fzf-maps-o)
@@ -578,25 +627,32 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 
         let g:coc_global_extensions = [
+        \ 'coc-actions',
+        \ 'coc-clangd',
         \ 'coc-css',
-        \ 'coc-json',
-        \ 'coc-tsserver',
-        \ 'coc-git',
-        \ 'coc-eslint',
-        \ 'coc-tslint-plugin',
-        \ 'coc-pairs',
-        \ 'coc-sh',
-        \ 'coc-vimlsp',
         \ 'coc-emmet',
-        \ 'coc-prettier',
-        \ 'coc-ultisnips',
+        \ 'coc-eslint',
         \ 'coc-explorer',
-        \ 'coc-python',
-        \ 'coc-lists',
-        \ 'coc-rls',
-        \ 'coc-vimtex',
+        \ 'coc-flutter',
+        \ 'coc-git',
         \ 'coc-java',
+        \ 'coc-json',
+        \ 'coc-lists',
+        \ 'coc-pairs',
+        \ 'coc-prettier',
         \ 'coc-smartf',
+        \ 'coc-snippets',
+        \ 'coc-python',
+        \ 'coc-rls',
+        \ 'coc-sh',
+        \ 'coc-spell-checker',
+        \ 'coc-texlab',
+        \ 'coc-tslint-plugin',
+        \ 'coc-tsserver',
+        \ 'coc-ultisnips',
+        \ 'coc-vimlsp',
+        \ 'coc-vimtex',
+        \ 'coc-yaml',
         \ 'coc-yank'
         \ ]
 
@@ -692,6 +748,38 @@ call plug#begin('~/.config/nvim/plugged')
         " -A means auto preview, and --normal means open list on normal mode.
         nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 
+        " Remap for do codeAction of selected region
+        function! s:cocActionsOpenFromSelected(type) abort
+            execute 'CocCommand actions.open ' . a:type
+        endfunction
+        xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+        nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@ 
+
+        " Code actions popup menu to use with coc-actions
+        Plug 'kizza/actionmenu.nvim'
+
+        let s:code_actions = []
+
+        func! ActionMenuCodeActions() abort
+           if coc#util#has_float()
+              call coc#util#float_hide()
+           endif
+
+           let s:code_actions = CocAction('codeActions')
+           let l:menu_items = map(copy(s:code_actions), { index, item -> item['title'] })
+           call actionmenu#open(l:menu_items, 'ActionMenuCodeActionsCallback')
+        endfunc
+
+        func! ActionMenuCodeActionsCallback(index, item) abort
+           if a:index >= 0
+              let l:selected_code_action = s:code_actions[a:index]
+              let l:response = CocAction('doCodeAction', l:selected_code_action)
+           endif
+        endfunc
+
+        nnoremap <silent> <Leader>sa :call ActionMenuCodeActions()<CR>
+
+
     " }}}
 " }}}
 
@@ -750,18 +838,47 @@ call plug#begin('~/.config/nvim/plugged')
         let g:vim_markdown_toc_autofit = 1
         nmap <leader>Tc :Toc<cr>
         nmap <leader>Tv :Tocv<cr>
+        vmap <leader><Bslash> :EasyAlign*<Bar><cr>
 
         "Tpope with that markdown ish
         Plug 'tpope/vim-markdown', { 'for': 'markdown' }
         let g:markdown_fenced_languages = [ 'tsx=typescript.tsx', 'bash=sh', 'viml=vim','python=py', 'csharp=cs', 'c++=cpp', 'flutter=dart', 'rust=rs' ]
 
-        "vim-livedown for live markdown previews
-        Plug 'shime/vim-livedown'
-        let g:livedown_autorun = 0
-        let g:livedown_open = 1
-        let g:livedown_port = 1337
-        let g:livedown_browser = "vivaldi-stable"
-        noremap <leader>md :LivedownToggle<cr>
+        " vim-medieval to evaluate code blocks in markdown docs
+        Plug 'gpanders/vim-medieval'
+        let g:medieval_langs = ['python=python3', 'ruby', 'sh', 'console=bash', 'rs=cargo']
+
+
+        " pandoc_preview to open markdown in zathura instead of web browser
+        Plug 'lingnand/pandoc-preview.vim'
+        let g:pandoc_preview_pdf_cmd = "zathura"
+        nnoremap <leader>md :PandocPreview<cr>
+
+    " }}}
+    " Misc Filetypes {{{
+
+         " Let Nvim open word docs using antiword
+         " Read-only .doc through antiword
+         autocmd BufReadPre *.doc silent set ro
+         autocmd BufReadPost *.doc silent %!antiword "%"
+
+         " Read-only odt/odp through odt2txt
+         autocmd BufReadPre *.odt,*.odp silent set ro
+         autocmd BufReadPost *.odt,*.odp silent %!odt2txt "%"
+
+         " Read-only pdf through pdftotext
+         autocmd BufReadPre *.pdf silent set ro
+         autocmd BufReadPost *.pdf silent %!pdftotext -nopgbrk -layout -q -eol unix "%" - | fmt -w78
+
+         " Read-only rtf through unrtf
+         autocmd BufReadPre *.rtf silent set ro
+         autocmd BufReadPost *.rtf silent %!unrtf --text
+    " }}}
+    " minimal wiki {{{
+      " vim outlaw
+      Plug 'lifepillar/vim-outlaw'
+      let g:outlaw_fenced_filetypes = ['python', 'ruby', 'sh', 'rust', 'sql', 'viml']
+      let g:outlaw_fenced_tag = '[`~]\{3}'
 
     " }}}
     " Latex {{{
@@ -770,8 +887,8 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'lervag/vimtex'
         let g:tex_flavor = 'latex'
         let g:vimtex_view_method = 'zathura'
-        let g:vimtex_latexmk_progname= '/usr/bin/nvr'
-        let g:vimtex_latexmk_options="-pdf -pdflatex='pdflatex -file-line-error -shell-escape -synctex=1'"
+        let g:vimtex_latexmk_progname = '/usr/bin/nvr'
+        " let g:vimtex_latexmk_options = "-pdf -pdflatex='pdflatex -file-line-error -shell-escape -synctex=1'"
         let g:vimtex_quickfix_mode = 0
         let g:vimtex_quickfix_open_on_warning = 0
         let g:vimtex_view_automatic=1
@@ -807,6 +924,30 @@ call plug#begin('~/.config/nvim/plugged')
        command! Scratch lua require'tools'.makeScratch()
 
     "}}}
+    " Vimux {{{
+    " open the vimux runner
+    map <leader>vr :VimuxOpenRunner<CR>
+
+    " Prompt for a command to run
+    map <Leader>vp :VimuxPromptCommand<CR>
+
+    " Run last command executed by VimuxRunCommand
+    map <Leader>vl :VimuxRunLastCommand<CR>
+
+    " Inspect runner pane
+    map <Leader>vi :VimuxInspectRunner<CR>
+
+    " Close vim tmux runner opened by VimuxRunCommand
+    map <Leader>vq :VimuxCloseRunner<CR>
+
+    " Interrupt any command running in the runner pane
+    map <Leader>vx :VimuxInterruptRunner<CR>
+
+    " Zoom the runner pane (use <bind-key> z to restore runner pane)
+    map <Leader>vz :call VimuxZoomRunner()<CR>
+
+    
+    " }}}
 
     " Flutter {{{
 
@@ -834,12 +975,44 @@ call plug#begin('~/.config/nvim/plugged')
     " }}}
     " Python {{{
     " run python commandline from inside nvim
-    nmap <leader>py :write !python3<cr>
+    nmap <leader>pt  :call PythonRun()<cr>
+    nmap <leader>py :!python3 "%"<CR>
+    " run the function the same but if it has arguments no enter
+    nmap <leader>pr :call PythonRunArgs()
+
+    func! PythonRun()
+      if exists('$TMUX')
+         execute VimuxRunCommand("clear; python3 " . bufname("%"))
+      endif
+   endfunction
+
 
     " }}}
 
-    Plug 'ekalinin/Dockerfile.vim'
-" }}}
+    "}}}
+    " Jupiter text {{{
+    " Install jupytext to handle ipynb files
+    Plug 'goerz/jupytext.vim'
+    Plug 'bfredl/nvim-ipy'
+
+    command! -nargs=0 RunQTConsole call jobstart("jupyter qtconsole --JupyterWidget.include_other_output=True")
+
+    let g:ipy_celldef = '^##' " regex for cell start and end
+
+    nmap <silent> <leader>jq :RunQTConsole<CR>
+    nmap <silent> <leader>jp :IPython<space>--existing<space>--no-window<CR>
+    nmap <silent> <leader>jc <Plug>(IPy-RunCell)
+    nmap <silent> <leader>ja <Plug>(IPy-RunAll)
+    " }}}
+
+    " InsertMode Quick Edit --------------------{{{
+    " use emacs shortcut in INSERT mode
+    imap <C-e> <END>
+    imap <C-a> <HOME>
+    imap <C-f> <Right>
+    imap <C-b> <Left>
+    " Plug 'ekalinin/Dockerfile.vim'
+    " }}}
 " Lua shit {{{
    " load lua functions for navigation
    " lua require("navigation")

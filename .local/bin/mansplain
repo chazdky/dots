@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Script for searching for a manual page and passing that as an argument
+# into zathura to display the manual as a pdf document
+
+man -k . | rofi -dmenu -l 20 | awk '{print $1}' | xargs -r man -Tpdf | zathura -
+

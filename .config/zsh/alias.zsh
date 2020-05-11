@@ -2,10 +2,9 @@
 #  ALIASES  #
 #############
 
-# will be integrated to 'dotfiles.sh'
-#compdef dotfiles=git
 
 pfetch
+Quote
 
 # go to parent
 alias ..='cd ..'
@@ -17,10 +16,12 @@ alias .......='cd ../../../../../..'
 alias ........='cd ../../../../../../..'
 
 # ls variants
-alias l='exa -al --color=always --group-directories-first' # my preferred listing
+alias l='exa -al --git --color=always --group-directories-first' # my preferred listing
 alias la='exa -a --color=always --group-directories-first' # all files and dirs
-alias ll='exa -l --color=always --group-directories-first' # long format
-alias lt='exa -aT --color-always --group-directories-first' # tree listing
+alias lg='exa -al --grid --color=always --group-directories-first' # all files and dirs
+alias ll='exa -l --git --color=always --group-directories-first' # long format
+alias lt='exa -aT --group-directories-first' # tree listing
+alias ltg='exa -aT --long --git --group-directories-first' # tree listing
 
 
 # suffix aliases
@@ -44,7 +45,11 @@ alias zaf='zathura --fork'
 alias cht='cht.sh'
 alias cheat='curl cheat.sh'
 alias csh='cht.sh --shell'
-alias nvt='nvim ~/.config/nvim/UltiSnips/tex.snippets'
+alias nva='nvim ~/.config/zsh/alias.zsh'
+alias df='df -h'
+alias pes='pipenv_setup'
+alias pesd='pipenv_setup -d'
+alias pesp='pipenv_setup -p'
 
 # directory aliases
 alias script='cd ~/Documents/Scripts'
@@ -56,9 +61,10 @@ alias cfg='cd ~/.config'
 alias books='cd ~/Documents/ComputerBooks'
 alias notes='cd ~/Notes'
 alias ej='cd ~/Notes/EngineeringJournal'
-alias ej167='cd ~/Notes/EngineeringJournal/CIT167'
-alias ej217='cd ~/Notes/EngineeringJournal/CIT217'
-alias ej288='cd ~/Notes/EngineeringJournal/CIT288'
+alias ejap='cd ~/Notes/EngineeringJournal/Apluscert-studies'
+alias ejcc='cd ~/Notes/EngineeringJournal/CCNACertStudies'
+alias ejnp='cd ~/Notes/EngineeringJournal/NetplusCertStudies'
+alias ejsp='cd ~/Notes/EngineeringJournal/2020-Spring'
 alias us='cd ~/.config/nvim/UltiSnips'
 
 # vim/nvim aliases
@@ -67,23 +73,36 @@ alias gv='glrnvim'
 alias gvf='glrnvim'
 alias vv='vim'
 alias qnv='nvim-qt'
+alias oni='~/Applications/Oni2/Onivim2.AppDir/AppRun'
 
 # git aliases
-alias gis='git status'
-alias gic='git commit'
+alias gstat='git status'
+alias gcom='git commit'
 alias gini='git init'
-alias gipus='git push'
-alias gitpl='git pull'
+alias gpush='git push'
+alias gpull='git pull'
 alias gst='git stash'
-alias gra='git remote add origin'
+alias gradd='git remote add origin'
 alias gpm='git push -u origin master'
+alias gcl='git clone'
+
 
 # Tmux aliases
-alias tas='tmux attach-session'
+alias tas='tmux attach-session -t' 
+alias tns='tmux new-session -s' 
 alias tds='tmux detach-session'
 alias tls='tmux list-sessions'
 alias tks='tmux kill-session'
-alias connect='ssh root@50.116.34.43'
+
+# Tmuxp aliases
+alias tpl='tmuxp load'
+alias tfs='tmuxp freeze "#s"'
+alias tpn='tmuxp new'
+alias ej167='tmuxp load ej167'
+alias ej217='tmuxp load ej217'
+alias ej218='tmuxp load ej218'
+alias ej288='tmuxp load ej288'
+alias tdev='tmuxp load dev'
 
 # Termdown aliases
 alias td5m='termdown -b 5m'
@@ -99,6 +118,11 @@ alias paccache='yay -Sc'
 alias vnva='source .venv/bin/activate'
 alias lxc='latexclean'
 alias vitunes='vivaldi-stable https://beta.music.apple.com/for-you --fork --new-window'
+alias 10ff='python3 ~/Applications/10ff/main.py'
+alias ytd='youtube-dl -f '\''bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'\'''
+alias ytf='youtube-dl -F'
+# alias mdz='wget -qO - "$1" | iconv -t utf-8 | html2text -b 0 | zathura -'
+# alias htmd='pandoc -f html -t markdown'
 
 # set aliases for sourcing files
 alias soz='source ~/.zshrc'
@@ -434,6 +458,24 @@ fman() {
 #############
 #  WIDGETS  #
 #############
+# open a file open in the running process for the current tmux session. 
+
+nvo() {
+  SESSION=$(tmux display-message -p '#S')
+
+  if [ ! -z "$TMUX" ]; then
+    local ids="$(tmux list-panes -a -F '#{pane_current_command} #{window_id} #{pane_id} #{session_name}' | grep $SESSION | awk '/^nvim / {print $2" "$3; exit}')"
+    local window_id="$ids[(w)2]"
+    local pane_id="$ids[(w)3]"
+    [ ! -z "$pane_id" ] && tmux attach-session -t "$SESSION" && tmux select-window -t "$window_id" && tmux select-pane -t "$pane_id"
+  # elif [ ! -z "$TMUX" ]; then 
+  #   local ids="$(tmux list-panes -a -F '#{pane_current_command} #{window_id} #{pane_id}' | awk '/^nvim / {print $2" "$3; exit}')"
+  #   local window_id="$ids[(w)1]"
+  #   local pane_id="$ids[(w)2]"
+  #   [ ! -z "$pane_id" ] && tmux select-window -t "$window_id" && tmux select-pane -t "$pane_id"
+  fi
+  /home/chazdii/.local/bin/nvr -s $@
+}
 
 # command search (formatted like official fzf keybindings)
 fzf-command-widget() {

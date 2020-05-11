@@ -1,0 +1,120 @@
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autoint: true
+Xft.hintstyle: hintfull
+
+xterm*renderFont: true
+xterm*faceName: xft:Source Code Pro for Powerline Semibold Font
+xterm*faceSize: 12
+Xterm*utf8: 2
+
+xterm*termName: XTerm
+xterm*buffered: false
+
+
+!! xterm*Appearance
+xterm*font: xft:Source Code Pro for Powerline Semibold Font:size=12
+xterm*letterSpace: -2
+xterm*lineSpace: 0
+xterm*geometry: 92x24
+xterm*internalBorder: 24
+xterm*cursorBlink: false
+xterm*cursorUnderline: false
+xterm*saveLine: 2048
+xterm*scrollBar: false
+xterm*scrollBar_right: false
+xterm*urgentOnBell: false
+xterm*depth: 24
+xterm*iso14755: false
+
+!xterm color scheme:
+
+xterm*background: #1e1d40
+xterm*foreground: #c7c7c7
+
+xterm*cursorColor: #fad000
+xterm*cursorFont: #1e1e3f
+
+xterm*colorUL: #86a2b0
+
+! black
+xterm*color0  : #000000
+xterm*color8  : #808080
+! red
+xterm*color1  : #d90429
+xterm*color9  : #ff0000
+! green
+xterm*color2  : #3ad900
+xterm*color10 : #33ff00
+! yellow
+xterm*color3  : #fad000
+xterm*color11 : #fff000
+! blue
+xterm*color4  : #6943ff
+xterm*color12 : #0066ff
+! magenta
+xterm*color5  : #FF2C70
+xterm*color13 : #cc00ff
+! cyan
+xterm*color6  : #80FCFF
+xterm*color14 : #00ffff
+! white
+xterm*color7  : #c7c7c7
+xterm*color15 : #ffffff
+
+!! Common Kebinds for Navigation
+xterm*keysym.Shift-Up: command:\033]720;1\007
+xterm*keysym.Shift-Down: command:\033]721;1\007
+xterm*keysym.Control-Up: \033[1;5A
+xterm*keysym.Control-Down: \033[1;5B
+xterm*keysym.Control-Right: \033[1;5C
+xterm*keysym.Control-Left: \033[1;5D
+
+!! Copy Paste & Other Extensions
+xterm*perl-ext-common: default,clipboard,url-select,keyboard-select, autocomplete-ALL-the-things
+xterm*clipboard.autocopy: true
+xterm*copyCommand: xclip -i -selection clipboard
+xterm*pasteCommand: xclip -o -selection clipboard
+xterm*keysym.M-C-slash: perl:aAtt:word-complete
+xterm*keysym.M-question: perl:aAtt:fuzzy-complete
+xterm*keysym.M-quotedbl: perl:aAtt:undo
+xterm*keysym.M-c: perl:clipboard:copy
+xterm*keysym.M-v: perl:clipboard:paste
+xterm*keysym.M-C-v: perl:clipboard:paste_escaped
+xterm*keysym.M-Escape: perl:keyboard-select:activate
+xterm*keysym.M-s: perl:keyboard-select:search
+xterm*keysym.M-u: perl:url-select:select_next
+xterm*urlLauncher: firefox
+xterm*underlineURLs: true
+xterm*urlButton: 1
+
+!{{{ XFT
+!Xft.dpi:       96
+!Xft.antialias: 1
+!Xft.hinting:   1
+!Xft.hintstyle: hintfull
+!Xft.rgba:      rgb
+!}}}
+
+
+
+!{{{ Rofi config
+rofi.color-enabled: #e1efff
+rofi.color-window: #1e1d40, #8000ff, #8000ff
+rofi.color-normal: #2d2b55, #a599e9, #7d44b2, #6833ff, #e1efff
+rofi.color-active: #2d2b55, #a599e9, #7d44b2, #6833ff, #e1efff
+rofi.color-urgent: #2d2b55, #a599e9, #7d44b2, #6833ff, #e1efff
+rofi.separator-style:solid
+rofi.font: Fira Mono Regular 12
+rofi.bw: 2
+rofi.width: -80
+rofi.scroll-method: 1
+rofi.fixed-num-lines: false
+!rofi.lines: 10
+!}}}
+
+
+!include local overrides
+!#include ".Xresources.local"

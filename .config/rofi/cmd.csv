@@ -1,0 +1,7 @@
+Power menu,$HOME/.config/rofi/scripts/power.sh
+Bluetooth manager,$HOME/.config/rofi/scripts/bluetooth.sh
+Network Manager,$HOME/.config/rofi/scripts/networkmanger.py
+Tmuxp manager,$HOME/.config/rofi/scripts/rofi-tmuxp.py
+Note Manager,$HOME/.config/rofi/scripts/notes.py
+MPD Manager,$HOME/.local/bin/rofi-mpd.sh
+

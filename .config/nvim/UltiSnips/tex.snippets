@@ -1,3 +1,13 @@
+snippet today "Date" Ai
+`date +%F`
+endsnippet
+
+snippet box "Box" Ai
+`!p snip.rv = '┌' + '─' * (len(t[1]) + 2) + '┐'`
+│ $1 │
+`!p snip.rv = '└' + '─' * (len(t[1]) + 2) + '┘'`
+$0
+endsnippet
 
 snippet al "Align" b
 \begin{align}
@@ -60,10 +70,23 @@ snippet cha "Chapter" b
 ${0}
 endsnippet
 
+snippet cdblk "Code Block: with nmbrs, grey bkgrnd" Ab
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]
+{${1:python}}
+${0:${VISUAL}}
+\end{minted}
+
+endsnippet
 
 snippet ni "Non-indented paragraph" b
-\noindent
-${0}
+\noindent ${0}
 endsnippet
 
 snippet pac "Package" b
@@ -207,11 +230,11 @@ endsnippet
 ###################
 
 snippet scrot "Template: insert scrot" Ab
-\begin{center}
-	\includegraphics[width=0.${1}\linewidth]{${4}}
-	\caption{${2}}
-	\label{${3}}
-\end{center}
+\begin{figure}[${1:!h}]
+    \centering
+{\label{${2}}\includegraphics[width=.45\linewidth]{${4:demo}}
+	\caption{${3}}
+\end{figure}
 ${0}
 endsnippet
 
@@ -226,11 +249,10 @@ endsnippet
 snippet ff21 "Template: Float Fig 2 over 1" Ab
 
 \begin{figure}[!hbt]\centering
-\subfloat[${1}]{\label{${5}${6}}\includegraphics[width=.45\linewidth]{demo}}\hfill
-\subfloat[${2}]{\label{${5}${7}}\includegraphics[width=.45\linewidth]{demo}}\par 
-\subfloat[${3}]{\label{${5}${8}}\includegraphics[width=.45\linewidth]{demo}}
-\caption{${4}}
-\label{${5}}
+\subfloat[${1}]{\label{$5a}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${2}]{\label{$5b}\includegraphics[width=.45\linewidth]{demo}}\par 
+\subfloat[${3}]{\label{$5c}\includegraphics[width=.45\linewidth]{demo}}
+\caption{${4}}\label{${5}}
 \end{figure}
 
 ${0}
@@ -239,28 +261,53 @@ endsnippet
 snippet ff12 "Template: Float Fig 1 over 2" Ab
 
 \begin{figure}[!hbt]\centering
-\subfloat[${1}]{\label{${5}${6}}\includegraphics[width=.45\linewidth]{demo}}\par
-\subfloat[${2}]{\label{${5}${7}}\includegraphics[width=.45\linewidth]{demo}}\hfill
-\subfloat[${3}]{\label{${5}${8}}\includegraphics[width=.45\linewidth]{demo}}\par
-\caption{${4}}
-\label{${5}}
+\subfloat[${1}]{\label{$5a}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${2}]{\label{$5b}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${3}]{\label{$5c}\includegraphics[width=.45\linewidth]{demo}}\par
+\caption{${4}}\label{${5}}
 \end{figure}
 
 ${0}
 
 endsnippet
 
+snippet ff22 "Template: Float Fig 2 over 2" Ab
+
+\begin{figure}[!hbt]\centering
+\subfloat[${1}]{\label{$6a}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${2}]{\label{$6b}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${3}]{\label{$6c}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${4}]{\label{$6d}\includegraphics[width=.45\linewidth]{demo}}\par
+\caption{${5}}\label{${6}}
+\end{figure}
+
+${0}
+endsnippet
 
 snippet f212 "Template: Float Fig 2 over 1 over 2" Ab
 
 \begin{figure}[!hbt]\centering
-\subfloat[${1}]{\label{${7}${8}}\includegraphics[width=.45\linewidth]{demo}}\hfill
-\subfloat[${2}]{\label{${7}${9}}\includegraphics[width=.45\linewidth]{demo}}\par
-\subfloat[${3}]{\label{${7}${10}}\includegraphics[width=.45\linewidth]{demo}}\par
-\subfloat[${4}]{\label{${7}${11}}\includegraphics[width=.45\linewidth]{demo}}\hfill
-\subfloat[${5}]{\label{${7}${12}}\includegraphics[width=.45\linewidth]{demo}}\par
-\caption{${6}}
-\label{${7}}
+\subfloat[${1}]{\label{$7a}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${2}]{\label{$7b}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${3}]{\label{$7c}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${4}]{\label{$7d}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${5}]{\label{$7e}\includegraphics[width=.45\linewidth]{demo}}\par
+\caption{${6}}\label{${7}}
+\end{figure}
+
+${0}
+endsnippet
+
+snippet f222 "Template: Float Fig 2 over 2 over 2" Ab
+
+\begin{figure}[!hbt]\centering
+\subfloat[${1}]{\label{$8a}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${2}]{\label{$8b}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${3}]{\label{$8c}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${4}]{\label{$8d}\includegraphics[width=.45\linewidth]{demo}}\par
+\subfloat[${5}]{\label{$8e}\includegraphics[width=.45\linewidth]{demo}}\hfill
+\subfloat[${6}]{\label{$8f}\includegraphics[width=.45\linewidth]{demo}}\par
+\caption{${7}}\label{${8}}
 \end{figure}
 
 ${0}
@@ -330,9 +377,15 @@ snippet iverb "inline verbatim" A
 {\scriptsize{\verb$${1:${VISUAL}}$}\normalsize} ${0}
 endsnippet
 
-snippet fref "long intro with subref and page ref" Ai
-You can see in Fig.~\ref{${1}}~\subref{${2}} 
-on Pg.~\pageref{${3}} ${0}
+snippet fref "inline ref with subref and page ref" Ai
+Fig.~\ref{${1}}\subref{$1${2}} 
+on Pg.~\pageref{$1} ${0}
+endsnippet
+
+snippet mref "inline ref with multiple subrefs and page ref" Ai
+Fig.~\ref{${1}}\subref{$1${2}} ${3:through} 
+Fig.~\ref{$1}\subref{$1${4}} 
+on Pg.~\pageref{$1}. ${0}
 endsnippet
 
 snippet lref "inline reference" Ai
@@ -340,7 +393,7 @@ Fig.~\ref{${1}}${0}
 endsnippet
 
 snippet sref "inline subref" Ai
-Fig.~\ref{${1}}\subref{${2}}${0}
+Fig.~\ref{${1}}\subref{$1${2}}${0}
 endsnippet
 
 snippet pageref "inline pageref" Ai
@@ -356,11 +409,12 @@ snippet cgrey "Template gray box around code or list" b
 
 \hspace{0.2cm}
 \begin{tcolorbox}[width=6.3in]
+{\bf{}}
 \scriptsize 
 ${1}
   \begin{${2}}
   ${3}
-  \end{${2}}
+  \end{$2}
 \end{tcolorbox}
 \hspace{0.2cm}
 \normalsize  
@@ -377,24 +431,32 @@ endsnippet
 snippet csec "lab section" Ab
 
 %===================================
-\mysection{\textbf{Part ${1}: ${2}}}
+\mysection{\textbf{Part ${1}: ${2:${VISUAL}}}}
 ${3}
 
 endsnippet
 
 snippet csub "lab subsection" Ab
-\mysubsection{${1}}{${2:${VISUAL}}}
-\\\\${0}
+\mysubsection{${1:1}}{${2:${VISUAL}}}\\\\
+${0:a}
 endsnippet
 
 snippet cisub "lab subsection" Ab
-\noindent\mysubsection{${1}}{${2:${VISUAL}}}
-\\\\${0}
+\noindent\mysubsection{${1:2}}{${2:${VISUAL}}}\\\\
+${0:a}
 endsnippet
 
-snippet subsub "Subsubsection" Ab
-\subsubection{${1}}
-\\\\${0}
+snippet ssub "Subsubsection" Ab
+{\textbf{${1:a}}}\\\\
+${0:a}
+endsnippet
+
+snippet cornq "Cornell Regular Question" Ab
+\\cornell{${1: Question}}{${2: Notes}}
+endsnippet
+
+snippet corniq "Cornell Important Question" Ab
+\\cornell[${1:title for important Question}]{${2:Important Question}}{${3: Important Answer or note}}
 endsnippet
 
 snippet creport "Template: LabReport" b
@@ -535,4 +597,110 @@ snippet radd "Template: Add to Research journal" b
 %===================================
 %===================================
 
+endsnippet
+
+snippet *add "Add an unnumbered section to report" Ab
+\documentclass[]{subfiles}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{${1} \\linebreak[1] ${2} \hspace*{\fill}{2020}}
+\noindent\textbf{{${3:Packet Tracer labs}} \hspace*{\fill}{\textbf{CIT ${4:167}}}}\linebreak[1]
+{{Spring 2020} \hspace*{\fill}{Chaz Davis}}                             
+\addcontentsline{toc}{chapter}{Useful ${5:Bits}: $1 $2}
+
+%===================================
+
+endsnippet
+
+snippet Cornell "Cornell Style Note system" b
+%
+% Taken from here: https://tex.stackexchange.com/questions/70570/cornell-notes-a-lyx-or-latex-solution-needed
+%
+
+\documentclass[a4paper]{article}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\title{
+\vspace{-3em}
+\begin{tcolorbox}
+\Huge\sffamily ${1:Title}
+\end{tcolorbox}
+\vspace{-3em}
+}
+
+\date{${2:\today}}
+
+\usepackage{background}
+\SetBgScale{1}
+\SetBgAngle{0}
+\SetBgColor{red}
+\SetBgContents{\rule[0em]{4pt}{\textheight}}
+\SetBgHshift{-2.3cm}
+\SetBgVshift{0cm}
+\usepackage{lipsum}% just to generate filler text for the example
+\usepackage[margin=2cm]{geometry}
+\usepackage{lipsum}% just to generate dummy text for the example
+
+
+%\url{http://tex.stackexchange.com/a/314/86}
+
+\makeatletter
+\def\cornell{\@ifnextchar[{\@with}{\@without}}
+\def\@with[#1]#2#3{
+\begin{tcolorbox}[enhanced,colback=gray,colframe=black,fonttitle=\large\bfseries\sffamily,sidebyside=true, nobeforeafter,before=\vfil,after=\vfil,colupper=blue,sidebyside align=top, lefthand width=.3\textwidth,
+opacityframe=0,opacityback=.3,opacitybacktitle=1, opacitytext=1,
+segmentation style={black!55,solid,opacity=0,line width=3pt},
+title=#1
+]
+\begin{tcolorbox}[colback=red!05,colframe=red!25,sidebyside align=top,
+width=\textwidth,nobeforeafter]#2\end{tcolorbox}%
+\tcblower
+\sffamily
+\begin{tcolorbox}[colback=blue!05,colframe=blue!10,width=\textwidth,nobeforeafter]
+#3
+\end{tcolorbox}
+\end{tcolorbox}
+}
+\def\@without#1#2{
+\begin{tcolorbox}[enhanced,colback=white!15,colframe=white,fonttitle=\bfseries,sidebyside=true, nobeforeafter,before=\vfil,after=\vfil,colupper=blue,sidebyside align=top, lefthand width=.3\textwidth,
+opacityframe=0,opacityback=0,opacitybacktitle=0, opacitytext=1,
+segmentation style={black!55,solid,opacity=0,line width=3pt}
+]
+
+\begin{tcolorbox}[colback=red!05,colframe=red!25,sidebyside align=top,
+width=\textwidth,nobeforeafter]#1\end{tcolorbox}%
+\tcblower
+\sffamily
+\begin{tcolorbox}[colback=blue!05,colframe=blue!10,width=\textwidth,nobeforeafter]
+#2
+\end{tcolorbox}
+\end{tcolorbox}
+}
+\makeatother
+
+\parindent=0pt
+
+%\newcommand{\cornell}[2]{%
+%}
+
+%\AddEverypageHook{
+%\hspace{.3\textwidth}\vrule width 3pt depth .4\textheight
+%\vspace{-\textheight}}
+
+\providecommand{\LyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+
+\begin{document}
+\maketitle
+\SetBgContents{\rule[0em]{4pt}{\textheight}}
+%=======================================================
+
+\cornell{${3:Research question}}{${4:Notes}}
+
+%=========================================
+\end{document}
 endsnippet

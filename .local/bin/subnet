@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+import sys, ipaddress
+
+if __name__ == "__main__":
+    ipi = ipaddress.ip_interface(sys.argv[1])
+    print("Address", ipi.ip)
+    print("Mask", ipi.netmask)
+    print("Cidr", str(ipi.network).split("/")[1])
+    print("Network", str(ipi.network).split("/")[0])
+    print("Broadcast", ipi.network.broadcast_address)

@@ -1,0 +1,4 @@
+#!/usr/bin/bash 
+# Created by Chaz Davis on 2020-05-02
+
+git clone $(xsel -op) 

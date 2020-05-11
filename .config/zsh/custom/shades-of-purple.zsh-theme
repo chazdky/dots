@@ -35,6 +35,12 @@ collapse_pwd() {
    echo $(pwd | sed -e "s,^$HOME,~," | sed "s@\(.\)[^/]*/@\1/@g")
 }
 
+# Special segment Characters
+() {
+  local LC_ALL="" LC_CTYPE="en_US.UTF-8"
+  SEGMENT_SEPARATOR=$'\ue0b0'
+}
+
 # Begin a segment.
 # Takes two arguments, background and foreground. Both can be omitted,
 # rendering default background/foreground.
@@ -70,7 +76,6 @@ prompt_end() {
 # Context: user@hostname (who am I and where am I).
 prompt_context() {
   local user=`whoami`
-
   if [[ "$user" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
     prompt_segment black default "%(!.%{%F{yellow}%}.)❯"
   fi
@@ -95,7 +100,14 @@ prompt_git() {
 # Dir: current working directory.
 prompt_dir() {
   prompt_segment blue black '%~'
-  # echo $(pwd | sed -e "s,^$HOME,~," | sed "s@\(.\)[^/]*/@\1/@g")
+}
+
+# Virtualenv: current working virtualenv
+prompt_virtualenv() {
+  local virtualenv_path="$VIRTUAL_ENV"
+  if [[ -n $virtualenv_path && -n $VIRTUAL_ENV_DISABLE_PROMPT ]]; then
+    prompt_segment blue black "(`basename $virtualenv_path`)"
+  fi
 }
 
 # Status:
@@ -112,10 +124,25 @@ prompt_status() {
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
 
-## Main prompt.
+#AWS Profile:
+# - display current AWS_PROFILE name
+# - displays yellow on red if profile name contains 'production' or
+#   ends in '-prod'
+# - displays black on green otherwise
+prompt_aws() {
+  [[ -z "$AWS_PROFILE" ]] && return
+  case "$AWS_PROFILE" in
+    *-prod|*production*) prompt_segment red yellow  "AWS: $AWS_PROFILE" ;;
+    *) prompt_segment green black "AWS: $AWS_PROFILE" ;;
+  esac
+}
+
+## Main prompt
 build_prompt() {
   RETVAL=$?
   prompt_status
+  prompt_virtualenv
+  prompt_aws
   prompt_context
   prompt_dir
   prompt_git
@@ -123,3 +150,5 @@ build_prompt() {
 }
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
+
+

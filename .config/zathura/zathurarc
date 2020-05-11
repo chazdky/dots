@@ -1,0 +1,53 @@
+# Zathura configuration file
+# See man `man zathurarc'
+
+# Open document in fit-width mode by default
+set adjust-open "width"
+
+# One page per row by default
+set pages-per-row 1
+
+#stop at page boundries
+set scroll-page-aware "true"
+
+# let selection get copied to system clipboard
+set selection-clipboard clipboard
+
+#zoom settings
+set zoom-min 10
+
+# colorscheme base 16 porple
+#
+
+set default-bg                  "#292c36"
+set default-fg                  "#333344"
+
+set statusbar-fg                "#b8b8b8"
+set statusbar-bg                "#474160"
+
+set inputbar-bg                 "#292c36"
+set inputbar-fg                 "#f8f8f8"
+
+set notification-bg             "#292c36"
+set notification-fg             "#f8f8f8"
+
+set notification-error-bg       "#292c36"
+set notification-error-fg       "#f84547"
+
+set notification-warning-bg     "#292c36"
+set notification-warning-fg     "#f84547"
+
+set highlight-color             "#efa16b"
+set highlight-active-color      "#8485ce"
+
+set completion-bg               "#333344"
+set completion-fg               "#8485ce"
+
+set completion-highlight-fg     "#f8f8f8"
+set completion-highlight-bg     "#8485ce"
+
+set recolor-lightcolor          "#2D2B55"
+set recolor-darkcolor           "#e8e8e8"
+
+set recolor                     "true"
+set recolor-keephue             "false"

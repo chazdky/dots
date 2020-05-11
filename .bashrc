@@ -1,16 +1,22 @@
 #
 # ~/.bashrc
 #
-VISUAL=nvim;
-export VISUAL
-EDITOR=nvim;
-export EDITOR
+# set nvim to open in running instance. if no running instance
+# it will open a new instance
+if [[ -n "$NVIM_LISTEN_ADDRESS" && -f "HOME/.local/bin/nvr" ]]; then
+    export VISUAL="nvr --servername 127.0.0.1:1615 $@"
+else
+    export VISUAL="nvim"
+fi
+
+export EDITOR=$VISUAL
 NPM_PACKAGES="${HOME}/.npm-packages"
 export PATH="$PATH:$NPM_PACKAGES/bin"
 
-# preserve MANPATH if youve already defined it somewhere else
+# preserve MANPATH if you've already defined it somewhere else
 # Otherwise, fall back to 'manpath' so we can inherit from '/etc/manpath'
-export MANPATH="$(MANPATH-$(manpath)):$NPM_PACKAGES/share/man"
+# export MANPATH="$(MANPATH-$(manpath)):$NPM_PACKAGES/share/man"
+export MANPATH=$MANPATH:$NPM_PACKAGES/share/man
 
 
 # setup texlive for use
@@ -36,13 +42,13 @@ colors() {
 			fgc=${fgc#37} # white
 			bgc=${bgc#40} # black
 
-			vals="${fgc:+$fgc;}${bgc}"
-			vals=${vals%%;}
+			vals="${fgc:+$fgc}${bgc}"
+			vals=${vals%%}
 
 			seq0="${vals:+\e[${vals}m}"
-			printf "  %-9s" "${seq0:-(default)}"
+			printf "  %-9s" "${seq0:-default}"
 			printf " ${seq0}TEXT\e[m"
-			printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
+			printf " \e[${vals:+${vals+$vals}}1mBOLD\e[m"
 		done
 		echo; echo
 	done
@@ -52,7 +58,7 @@ colors() {
 
 # Change the window title of X terminals
 case ${TERM} in
-	xterm*|kitt*|rxvt*|Eterm*|aterm|kterm|gnome*|interix|konsole*)
+	xterm*|alacritt*|kitt*|rxvt*|Eterm*|aterm|kterm|gnome*|interix|konsole*)
 		PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\007"'
 		;;
 	screen*|tmux*)

@@ -19,9 +19,11 @@ export ANDROID_SDK_ROOT=$HOME/Android/
 export PATH=$ANDROID_SDK/emulator:$ANDROID_SDK/tools:$PATH
 export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/emulator
 export ZSH_CUSTOM="$ZSH_CONFIG/custom"
+export PYTHONSTARTUP=~/.config/.pyrc
+export PIPENV_VENV_IN_PROJECT=1
 
 if [[ "$TERM" != 'linux' ]]; then
-    ZSH_THEME='shades-of-purple'
+    ZSH_THEME='${ZSH_CONFIG}/custom/shades-of-purple'
 fi
 
 # setup texlive for use
@@ -33,7 +35,7 @@ year=2020
 #CASE_SENSITIVE="true"
 #HYPHEN_INSENSITIVE="true"
 #DISABLE_AUTO_UPDATE="true"
-UPDATE_ZSH_DAYS=7
+#UPDATE_ZSH_DAYS=7
 #DISABLE_LS_COLORS="true"
 #DISABLE_AUTO_TITLE="true"
 #ENABLE_CORRECTION="true"
@@ -60,6 +62,11 @@ UPDATE_ZSH_DAYS=7
 [[ -f "$HOME/.dircolors" ]] \
     && eval "$(dircolors "$HOME/.dircolors")"
 
+# tmuxp completion on the command line
+eval "$(_TMUXP_COMPLETE=source_zsh tmuxp)"
+
+# fasd to rank and keep track of directories
+eval "$(fasd --init auto)"
 
 #####################
 #  PLUGIN SETTINGS  #
@@ -99,10 +106,17 @@ plugins=(
 [[ -f "$ZSH_CONFIG/completion.zsh" ]] \
     && source "$ZSH_CONFIG/completion.zsh"
 
-# Oh-My-Zsh
-[[ -f "/usr/share/oh-my-zsh/oh-my-zsh.sh" ]] \
-    && source "/usr/share/oh-my-zsh/oh-my-zsh.sh"
+# Prompt
+[[ -f "$ZSH_CONFIG/prompt.zsh" ]] \
+    && source "$ZSH_CONFIG/prompt.zsh"
 
+# Alias
+[[ -f "$ZSH_CONFIG/alias.zsh" ]] \
+    && source "$ZSH_CONFIG/alias.zsh"
+
+# Functions
+[[ -f "$ZSH_CONFIG/functions.zsh" ]] \
+    && source "$ZSH_CONFIG/functions.zsh"
 
 ########################
 #  USER CONFIGURATION  #
@@ -133,6 +147,12 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey "^X^E" edit-command-line
 
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
+
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
+
 ############
 #  CUSTOM  #
 ############
@@ -140,7 +160,10 @@ bindkey "^X^E" edit-command-line
 # Zsh options
 setopt COMPLETE_ALIASES
 setopt HIST_IGNORE_SPACE
-setopt NO_AUTO_CD
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt AUTO_LIST
+setopt APPEND_HISTORY
 setopt INTERACTIVE_COMMENTS
 setopt PROMPT_SUBST
 
@@ -151,10 +174,6 @@ stty -ixon
 [[ -f "$ZSH_CONFIG/highlight.zsh" ]] \
     && source "$ZSH_CONFIG/highlight.zsh"
 
-# Aliases
-[[ -f "$ZSH_CONFIG/alias.zsh" ]] \
-    && source "$ZSH_CONFIG/alias.zsh"
-
 # FZF
 [[ -f "$ZSH_CONFIG/fzf.zsh" ]] \
     && source "$ZSH_CONFIG/fzf.zsh"
@@ -163,20 +182,29 @@ stty -ixon
 #[[ -f "$ZSH_CONFIG/vim.zsh" ]] \
 #    && source "$ZSH_CONFIG/vim.zsh"
 
-# Gruvbox colors fix
-#[[ -f "$HOME/.bin/fix-gruvbox-palette" ]] \
-#    && [[ "$TERM" != 'xterm-kitty' ]] \
-#    && [[ "$TERM" != 'tmux-256color' ]] \
-#    && source "$HOME/.bin/fix-gruvbox-palette"
 
 # TMUX
-#local main_attached="$(tmux list-sessions -F '#S #{session_attached}' \
-#    2>/dev/null \
-#    | sed -n 's/^main[[:space:]]//p')"
-#if [[ "$main_attached" -le '0' ]] && [[ "$TERM" != 'linux' ]]; then
-#    tmux new -A -s main -t main >/dev/null 2>&1
-#    exit
-#fi
+local main_attached="$(tmux list-sessions -F '#S #{session_attached}' \
+    2>/dev/null \
+    | sed -n 's/^main[[:space:]]//p')"
+if [[ "$main_attached" -le '0' ]] && [[ "$TERM" != 'linux' ]]; then
+    tmux new -A -s main -t main >/dev/null 2>&1
+    exit
+fi
+
+if [[ -n $TMUX ]]; then
+    export NVIM_LISTEN_ADDRESS=/tmp/nvim_$USER_`tmux display -p "#{session_attached}"`
+fi
+
+function nv() {
+  if [ ! -z "$TMUX" ]; then
+    local ids="$(tmux list-panes -a -F '#{pane_current_command} #{window_id} #{pane_id}' | awk '/^nvim / {print $2" "$3; exit}')"
+    local window_id="$ids[(w)1]"
+    local pane_id="$ids[(w)2]"
+    [ ! -z "$pane_id" ] && tmux select-window -t "$window_id" && tmux select-pane -t "$pane_id"
+  fi
+  nvr -s $@
+}
 
 # Alternative prompt
 if [[ "$TERM" == "linux" ]] || [[ ! -d "$ZSH_CONFIG" ]]; then
@@ -206,10 +234,11 @@ source <(kitty + complete setup zsh)
 
 # Debug
 #zprof
-alias config='/usr/bin/git --git-dir=/home/chazdii/.dotfiles/ --work-tree=/home/chazdii'
+# alias config='/usr/bin/git --git-dir=/home/chazdii/.dotfiles/ --work-tree=/home/chazdii'
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="/root/.local/bin:$PATH"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 alias config='/usr/bin/git --git-dir=/home/chazdii/.cfg/ --work-tree=/home/chazdii'

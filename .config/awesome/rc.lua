@@ -11,6 +11,8 @@ local lain = require("lain")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+-- local pomodoro = require("pomodoro").widget
+-- local weather = require("weather").widget
 -- Freedesktop menu
 local freedesktop = require("freedesktop")
 -- Enable VIM help for hotkeys widget when client with matching name is opened:
@@ -55,8 +57,8 @@ beautiful.notification_font = "Fira Code Retina 12"
 browser = "exo-open --launch WebBrowser" or "vivaldi-stable"
 filemanager = "exo-open --launch FileManager" or "thunar"
 editor = "nvim"
-gui_editor = "nvim-qt"
-terminal = "kitty"
+gui_editor = "glrnvim"
+terminal = "alacritty"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -73,10 +75,11 @@ awful.layout.layouts = {
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
     awful.layout.suit.max,
-    awful.layout.suit.corner.ne,
+    -- awful.layout.suit.corner.ne,
     awful.layout.suit.corner.nw,
     awful.layout.suit.corner.sw,
-    awful.layout.suit.corner.se,
+    -- awful.layout.suit.corner.se,
+    awful.layout.suit.spiral,
     lain.layout.centerwork,
 }
 -- }}}
@@ -267,6 +270,10 @@ globalkeys = gears.table.join(
               {description = "view previous", group = "tag"}),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
               {description = "view next", group = "tag"}),
+    awful.key({ modkey, "Mod1"    }, "j",      awful.tag.viewprev,
+              {description = "view previous", group = "tag"}),
+    awful.key({ modkey, "Mod1"    }, "k",      awful.tag.viewnext,
+              {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
 
@@ -314,6 +321,10 @@ globalkeys = gears.table.join(
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
+    awful.key({ modkey, "Mod1"}, "Return", function ()
+      awful.menu.menu_keys.down = { "Down", "Alt_L" }
+      awful.menu.clients({theme = { width = 250 }}, {keygrabber=true, coords={x=525, y=330} })
+    end),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)                 end,
               {description = "increase master width factor", group = "layout"}),
@@ -341,6 +352,10 @@ globalkeys = gears.table.join(
               {description = "capture a screenshot of active window", group = "screenshot"}),
     awful.key({"Shift"            }, "Print", function () awful.spawn.with_shell("sleep 0.1 && /usr/bin/i3-scrot -s")   end,
               {description = "capture a screenshot of selection", group = "screenshot"}),
+    awful.key({modkey, "Mod1"     }, "m", function () awful.spawn.with_shell("/home/chazdii/.local/bin/rofi-menu")   end,
+              {description = "Launch rofi menu with a interactive menus", group = "launcher"}),
+    awful.key({modkey, "Mod1"     }, "l", function () awful.spawn.with_shell("/usr/bin/betterlockscreen -l dimblur")   end,
+              {description = "Launch the lockscreen", group = "launcher"}),
 
     awful.key({ modkey, "Control" }, "n",
               function ()
@@ -591,10 +606,10 @@ client.connect_signal("request::titlebars", function(c)
         layout = wibox.layout.align.horizontal
     }
         -- Hide the menubar if we are not floating
-   -- local l = awful.layout.get(c.screen)
-   -- if not (l.name == "floating" or c.floating) then
-   --     awful.titlebar.hide(c)
-   -- end
+   local l = awful.layout.get(c.screen)
+   if not (l.name == "floating" or c.floating) then
+       awful.titlebar.hide(c)
+   end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
